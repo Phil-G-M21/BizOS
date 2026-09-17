@@ -1,4 +1,4 @@
-import { BriefcaseBusiness, LayoutGrid, Package2, ShoppingBag, Users } from "lucide-react";
+import { BriefcaseBusiness, Inbox, LayoutGrid, Package2, ShoppingBag, Users } from "lucide-react";
 import { requireBusiness } from "@/lib/business";
 import { SignOutButton } from "./sign-out-button";
 import { NavLink } from "./nav-link";
@@ -35,6 +35,7 @@ export default async function AppLayout({
               <NavLink href="/products" label="Products" icon={<Package2 className="h-4 w-4" />} />
               <NavLink href="/customers" label="Customers" icon={<Users className="h-4 w-4" />} />
               <NavLink href="/orders" label="Orders" icon={<ShoppingBag className="h-4 w-4" />} />
+              <NavLink href="/inventory" label="Inventory" icon={<Inbox className="h-4 w-4" />} />
             </div>
           </div>
         </nav>
