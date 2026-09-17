@@ -136,7 +136,7 @@ export function ProductGrid({ products }: { products: Product[] }) {
                 <div className="mt-5 flex items-center justify-end gap-2">
                   <Link
                     href={`/products/${product.id}/edit`}
-                    className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                    className="rounded-lg border border-slate-200 px-2.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
                   >
                     Edit
                   </Link>

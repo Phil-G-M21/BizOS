@@ -91,7 +91,7 @@ export default function NewExpensePage() {
             />
           </label>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className={label}>
               Category
               <select className={field} value={category} onChange={(e) => setCategory(e.target.value)}>

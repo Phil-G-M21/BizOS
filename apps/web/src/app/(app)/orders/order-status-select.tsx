@@ -43,7 +43,7 @@ export function OrderStatusSelect({ id, status }: { id: string; status: string }
       value={current}
       disabled={saving}
       onChange={(e) => handleChange(e.target.value)}
-      className={`rounded-full border-0 px-2.5 py-1 text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-200 disabled:opacity-60 ${
+      className={`rounded-full border-0 px-2.5 py-1.5 text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-200 disabled:opacity-60 ${
         STATUS_STYLES[current] ?? "bg-slate-100 text-slate-700"
       }`}
     >

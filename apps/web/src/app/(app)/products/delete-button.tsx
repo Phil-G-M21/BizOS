@@ -16,7 +16,7 @@ export function DeleteButton({ id }: { id: string }) {
   return (
     <button
       onClick={del}
-      className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+      className="rounded-lg border border-slate-200 px-2.5 py-2 text-xs font-medium text-red-600 hover:bg-red-50"
     >
       Delete
     </button>

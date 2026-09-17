@@ -20,8 +20,14 @@ const field =
   "mt-1.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-normal outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100";
 const label = "block text-sm font-medium text-slate-700";
 
+// crypto.randomUUID() only exists in secure contexts (https or localhost) — it's
+// undefined when the dev server is reached over plain http on a LAN IP (e.g. from
+// a phone on the same hotspot), which throws here. This key is only a React list
+// key, never sent to Supabase, so a simple counter is all it needs.
+let lineKeySeq = 0;
 function newLine(): Line {
-  return { key: crypto.randomUUID(), productId: "", name: "", unitPrice: 0, quantity: 1 };
+  lineKeySeq += 1;
+  return { key: `line-${lineKeySeq}`, productId: "", name: "", unitPrice: 0, quantity: 1 };
 }
 
 export function OrderForm({

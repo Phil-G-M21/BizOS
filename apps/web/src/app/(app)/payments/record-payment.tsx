@@ -85,7 +85,7 @@ export function RecordPayment({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+        className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
       >
         {open ? "Close" : "Record payment"}
       </button>
@@ -95,17 +95,20 @@ export function RecordPayment({
           {history.length > 0 && (
             <div className="mb-4 space-y-2">
               {history.map((p) => (
-                <div key={p.id} className="flex items-center justify-between text-sm">
-                  <span className="text-slate-700">
+                <div
+                  key={p.id}
+                  className="flex flex-col gap-1.5 border-b border-slate-200 pb-2 text-sm last:border-b-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
+                >
+                  <span className="break-words text-slate-700">
                     {cedis(p.amount)} &middot; {p.method}
                     {p.note ? ` — ${p.note}` : ""}
                   </span>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-between gap-3 sm:justify-end">
                     <span className="text-xs text-slate-400">{formatDate(p.created_at)}</span>
                     <button
                       type="button"
                       onClick={() => del(p.id)}
-                      className="text-xs font-medium text-red-600 hover:underline"
+                      className="rounded-lg border border-slate-200 px-2.5 py-2 text-xs font-medium text-red-600 hover:bg-red-50"
                     >
                       Delete
                     </button>

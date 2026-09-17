@@ -26,13 +26,13 @@ export function NewOrderModal() {
           onMouseDown={() => setOpen(false)}
         >
           <div
-            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl"
+            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl sm:p-6"
             role="dialog"
             aria-modal="true"
             aria-labelledby="new-order-modal-title"
             onMouseDown={(e) => e.stopPropagation()}
           >
-            <div className="mb-5 flex items-start justify-between gap-6">
+            <div className="mb-5 flex items-start justify-between gap-4 sm:gap-6">
               <div>
                 <h2 id="new-order-modal-title" className="text-xl font-bold text-slate-900">
                   Create an order

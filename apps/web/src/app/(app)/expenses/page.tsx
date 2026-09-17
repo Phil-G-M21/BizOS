@@ -50,34 +50,59 @@ export default async function ExpensesPage() {
           No expenses yet. Click Add Expense to record your first one.
         </p>
       ) : (
-        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200 text-left">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-4 py-3 text-sm font-semibold text-slate-600">Title</th>
-                  <th className="px-4 py-3 text-sm font-semibold text-slate-600">Category</th>
-                  <th className="px-4 py-3 text-sm font-semibold text-slate-600">Amount</th>
-                  <th className="px-4 py-3 text-sm font-semibold text-slate-600">Date</th>
-                  <th className="px-4 py-3"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200">
-                {rows.map((expense) => (
-                  <tr key={expense.id}>
-                    <td className="px-4 py-3 font-medium text-slate-900">{expense.title}</td>
-                    <td className="px-4 py-3 text-slate-600">{expense.category}</td>
-                    <td className="px-4 py-3 text-slate-900">{cedis(expense.amount)}</td>
-                    <td className="px-4 py-3 text-slate-500">{formatDate(expense.spent_on)}</td>
-                    <td className="px-4 py-3 text-right">
-                      <DeleteButton id={expense.id} />
-                    </td>
+        <>
+          <div className="hidden overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm md:block">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-slate-200 text-left">
+                <thead className="bg-slate-50">
+                  <tr>
+                    <th className="px-4 py-3 text-sm font-semibold text-slate-600">Title</th>
+                    <th className="px-4 py-3 text-sm font-semibold text-slate-600">Category</th>
+                    <th className="px-4 py-3 text-sm font-semibold text-slate-600">Amount</th>
+                    <th className="px-4 py-3 text-sm font-semibold text-slate-600">Date</th>
+                    <th className="px-4 py-3"></th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {rows.map((expense) => (
+                    <tr key={expense.id}>
+                      <td className="px-4 py-3 font-medium text-slate-900">{expense.title}</td>
+                      <td className="px-4 py-3 text-slate-600">{expense.category}</td>
+                      <td className="px-4 py-3 text-slate-900">{cedis(expense.amount)}</td>
+                      <td className="px-4 py-3 text-slate-500">{formatDate(expense.spent_on)}</td>
+                      <td className="px-4 py-3 text-right">
+                        <DeleteButton id={expense.id} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+
+          <div className="space-y-3 md:hidden">
+            {rows.map((expense) => (
+              <div
+                key={expense.id}
+                className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="truncate font-medium text-slate-900">{expense.title}</div>
+                    <div className="mt-1 text-sm text-slate-500">{expense.category}</div>
+                  </div>
+                  <div className="shrink-0 font-semibold text-slate-900">
+                    {cedis(expense.amount)}
+                  </div>
+                </div>
+                <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
+                  <span className="text-xs text-slate-500">{formatDate(expense.spent_on)}</span>
+                  <DeleteButton id={expense.id} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

@@ -85,7 +85,7 @@ export default async function PaymentsPage() {
                   </span>
                 </div>
 
-                <div className="mt-4 grid grid-cols-3 gap-3 border-y border-slate-100 py-3">
+                <div className="mt-4 grid grid-cols-1 gap-2 border-y border-slate-100 py-3 sm:grid-cols-3 sm:gap-3">
                   <div>
                     <div className="text-xs text-slate-500">Total</div>
                     <div className="mt-1 font-semibold text-slate-900">{cedis(total)}</div>

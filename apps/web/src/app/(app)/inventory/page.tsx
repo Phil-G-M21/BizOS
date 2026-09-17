@@ -66,45 +66,80 @@ export default async function InventoryPage() {
           No products yet. Add products first, then track their stock here.
         </p>
       ) : (
-        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200 text-left">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-4 py-3 text-sm font-semibold text-slate-600">Product</th>
-                  <th className="px-4 py-3 text-sm font-semibold text-slate-600">Quantity</th>
-                  <th className="px-4 py-3 text-sm font-semibold text-slate-600">Status</th>
-                  <th className="px-4 py-3 text-sm font-semibold text-slate-600">Activity</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200">
-                {rows.map((product) => {
-                  const lowStock = product.stock_quantity <= LOW_STOCK_THRESHOLD;
-                  return (
-                    <tr key={product.id}>
-                      <td className="px-4 py-3 font-medium text-slate-900">{product.name}</td>
-                      <td className="px-4 py-3 text-slate-600">{product.stock_quantity}</td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={`rounded-full px-2 py-1 text-[10px] font-medium ${
-                            lowStock
-                              ? "bg-amber-100 text-amber-700"
-                              : "bg-emerald-100 text-emerald-700"
-                          }`}
-                        >
-                          {lowStock ? "Low Stock" : "In Stock"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-slate-500">
-                        {lowStock ? "Restock soon" : "Available"}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+        <>
+          <div className="hidden overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm md:block">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-slate-200 text-left">
+                <thead className="bg-slate-50">
+                  <tr>
+                    <th className="px-4 py-3 text-sm font-semibold text-slate-600">Product</th>
+                    <th className="px-4 py-3 text-sm font-semibold text-slate-600">Quantity</th>
+                    <th className="px-4 py-3 text-sm font-semibold text-slate-600">Status</th>
+                    <th className="px-4 py-3 text-sm font-semibold text-slate-600">Activity</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {rows.map((product) => {
+                    const lowStock = product.stock_quantity <= LOW_STOCK_THRESHOLD;
+                    return (
+                      <tr key={product.id}>
+                        <td className="px-4 py-3 font-medium text-slate-900">{product.name}</td>
+                        <td className="px-4 py-3 text-slate-600">{product.stock_quantity}</td>
+                        <td className="px-4 py-3">
+                          <span
+                            className={`rounded-full px-2 py-1 text-[10px] font-medium ${
+                              lowStock
+                                ? "bg-amber-100 text-amber-700"
+                                : "bg-emerald-100 text-emerald-700"
+                            }`}
+                          >
+                            {lowStock ? "Low Stock" : "In Stock"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-slate-500">
+                          {lowStock ? "Restock soon" : "Available"}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+
+          <div className="space-y-3 md:hidden">
+            {rows.map((product) => {
+              const lowStock = product.stock_quantity <= LOW_STOCK_THRESHOLD;
+              return (
+                <div
+                  key={product.id}
+                  className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 truncate font-medium text-slate-900">
+                      {product.name}
+                    </div>
+                    <span
+                      className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-medium ${
+                        lowStock
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-emerald-100 text-emerald-700"
+                      }`}
+                    >
+                      {lowStock ? "Low Stock" : "In Stock"}
+                    </span>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3 text-sm">
+                    <span className="text-slate-500">{product.stock_quantity} units</span>
+                    <span className="text-slate-500">
+                      {lowStock ? "Restock soon" : "Available"}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
       )}
 
       <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -121,8 +156,8 @@ export default async function InventoryPage() {
                 className="flex flex-wrap items-center justify-between gap-3 py-3"
               >
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-slate-900">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="break-words font-medium text-slate-900">
                       {productName(movement.products)}
                     </span>
                     <span
@@ -134,7 +169,7 @@ export default async function InventoryPage() {
                     </span>
                   </div>
                   {movement.note && (
-                    <div className="mt-1 text-sm text-slate-500">{movement.note}</div>
+                    <div className="mt-1 break-words text-sm text-slate-500">{movement.note}</div>
                   )}
                 </div>
                 <div className="flex items-center gap-4">
