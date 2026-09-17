@@ -7,6 +7,7 @@ import {
   splitOrders,
 } from "@/lib/analytics";
 import { DailySalesBars } from "../daily-sales-bars";
+import { CurrentDateTime } from "./current-datetime";
 
 function Stat({
   label,
@@ -79,7 +80,8 @@ export default async function DashboardPage() {
     <div className="space-y-6">
       <div>
         <div className="text-sm font-medium text-slate-500">Dashboard</div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+        <CurrentDateTime />
+        <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
           A clear view of your shop.
         </h1>
       </div>
