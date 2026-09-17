@@ -55,7 +55,7 @@ export default async function AppLayout({
               BUSINESS
             </div>
             <div className="space-y-1">
-              <DisabledNavItem label="Payments" icon={<CreditCard className="h-4 w-4" />} />
+              <NavLink href="/payments" label="Payments" icon={<CreditCard className="h-4 w-4" />} />
               <NavLink href="/expenses" label="Expenses" icon={<Wallet className="h-4 w-4" />} />
               <NavLink href="/analytics" label="Analytics" icon={<TrendingUp className="h-4 w-4" />} />
             </div>
