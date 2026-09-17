@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { Search, X } from "lucide-react";
 import { DeleteButton } from "./delete-button";
 
@@ -79,7 +80,13 @@ export function CustomerGrid({ customers }: { customers: Customer[] }) {
                 </div>
               )}
 
-              <div className="mt-5 flex items-center justify-end border-t border-slate-100 pt-4">
+              <div className="mt-5 flex items-center justify-end gap-2 border-t border-slate-100 pt-4">
+                <Link
+                  href={`/customers/${customer.id}/edit`}
+                  className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                >
+                  Edit
+                </Link>
                 <DeleteButton id={customer.id} />
               </div>
             </div>

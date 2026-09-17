@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { Package2, Search, X } from "lucide-react";
 import { DeleteButton } from "./delete-button";
 
@@ -132,7 +133,13 @@ export function ProductGrid({ products }: { products: Product[] }) {
                   </span>
                 </div>
 
-                <div className="mt-5 flex items-center justify-end">
+                <div className="mt-5 flex items-center justify-end gap-2">
+                  <Link
+                    href={`/products/${product.id}/edit`}
+                    className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                  >
+                    Edit
+                  </Link>
                   <DeleteButton id={product.id} />
                 </div>
               </div>
