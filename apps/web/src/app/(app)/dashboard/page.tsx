@@ -8,6 +8,7 @@ import {
 } from "@/lib/analytics";
 import { DailySalesBars } from "../daily-sales-bars";
 import { CurrentDateTime } from "./current-datetime";
+import { NewOrderModal } from "./new-order-modal";
 
 function Stat({
   label,
@@ -84,6 +85,9 @@ export default async function DashboardPage() {
         <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
           A clear view of your shop.
         </h1>
+        <div className="mt-4">
+          <NewOrderModal />
+        </div>
       </div>
 
       <div>

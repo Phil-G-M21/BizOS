@@ -4,14 +4,12 @@ import {
   Inbox,
   LayoutGrid,
   Package2,
-  Plus,
   Settings,
   ShoppingBag,
   TrendingUp,
   Users,
   Wallet,
 } from "lucide-react";
-import Link from "next/link";
 import { requireBusiness } from "@/lib/business";
 import { SignOutButton } from "./sign-out-button";
 import { DisabledNavItem, NavLink } from "./nav-link";
@@ -83,13 +81,6 @@ export default async function AppLayout({
             </div>
 
             <div className="flex items-center gap-3">
-              <Link
-                href="/orders/new"
-                className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
-              >
-                <Plus className="h-4 w-4" />
-                New Order
-              </Link>
               <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#d97757] text-sm font-semibold text-white">
                   {initial}
