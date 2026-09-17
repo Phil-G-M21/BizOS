@@ -30,3 +30,18 @@ export function NavLink({
     </Link>
   );
 }
+
+export function DisabledNavItem({ label, icon }: { label: string; icon: ReactNode }) {
+  return (
+    <div
+      aria-disabled="true"
+      className="flex cursor-not-allowed items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-300"
+    >
+      {icon}
+      <span className="flex-1">{label}</span>
+      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-400">
+        Soon
+      </span>
+    </div>
+  );
+}

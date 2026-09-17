@@ -1,7 +1,18 @@
-import { BriefcaseBusiness, Inbox, LayoutGrid, Package2, ShoppingBag, Users } from "lucide-react";
+import {
+  BriefcaseBusiness,
+  CreditCard,
+  Inbox,
+  LayoutGrid,
+  Package2,
+  Settings,
+  ShoppingBag,
+  TrendingUp,
+  Users,
+  Wallet,
+} from "lucide-react";
 import { requireBusiness } from "@/lib/business";
 import { SignOutButton } from "./sign-out-button";
-import { NavLink } from "./nav-link";
+import { DisabledNavItem, NavLink } from "./nav-link";
 
 export default async function AppLayout({
   children,
@@ -36,6 +47,26 @@ export default async function AppLayout({
               <NavLink href="/customers" label="Customers" icon={<Users className="h-4 w-4" />} />
               <NavLink href="/orders" label="Orders" icon={<ShoppingBag className="h-4 w-4" />} />
               <NavLink href="/inventory" label="Inventory" icon={<Inbox className="h-4 w-4" />} />
+            </div>
+          </div>
+
+          <div>
+            <div className="mb-2 px-3 text-[10px] font-bold tracking-[0.18em] text-slate-400">
+              BUSINESS
+            </div>
+            <div className="space-y-1">
+              <DisabledNavItem label="Payments" icon={<CreditCard className="h-4 w-4" />} />
+              <DisabledNavItem label="Expenses" icon={<Wallet className="h-4 w-4" />} />
+              <NavLink href="/analytics" label="Analytics" icon={<TrendingUp className="h-4 w-4" />} />
+            </div>
+          </div>
+
+          <div>
+            <div className="mb-2 px-3 text-[10px] font-bold tracking-[0.18em] text-slate-400">
+              SYSTEM
+            </div>
+            <div className="space-y-1">
+              <DisabledNavItem label="Settings" icon={<Settings className="h-4 w-4" />} />
             </div>
           </div>
         </nav>
