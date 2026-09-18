@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Package2, Search, X } from "lucide-react";
 import { DeleteButton } from "./delete-button";
 
@@ -21,6 +22,7 @@ const cedis = (n: number) => "GH₵" + Number(n).toLocaleString();
 type StockFilter = "All" | "In Stock" | "Low Stock" | "Out of Stock";
 
 export function ProductGrid({ products }: { products: Product[] }) {
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [stockFilter, setStockFilter] = useState<StockFilter>("All");
 
@@ -87,7 +89,16 @@ export function ProductGrid({ products }: { products: Product[] }) {
             return (
               <div
                 key={product.id}
-                className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                role="button"
+                tabIndex={0}
+                onClick={() => router.push(`/products/${product.id}`)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    router.push(`/products/${product.id}`);
+                  }
+                }}
+                className="cursor-pointer rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md"
               >
                 <div className="flex h-32 items-center justify-center rounded-xl bg-[#f0eee8]">
                   <Package2 className="h-12 w-12 text-slate-400" />
@@ -133,7 +144,10 @@ export function ProductGrid({ products }: { products: Product[] }) {
                   </span>
                 </div>
 
-                <div className="mt-5 flex items-center justify-end gap-2">
+                <div
+                  className="mt-5 flex items-center justify-end gap-2"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <Link
                     href={`/products/${product.id}/edit`}
                     className="rounded-lg border border-slate-200 px-2.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
