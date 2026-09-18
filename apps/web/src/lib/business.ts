@@ -13,7 +13,7 @@ export async function requireBusiness() {
 
   const { data: businesses } = await supabase
     .from("businesses")
-    .select("id, name, category, city, region")
+    .select("id, name, category, city, region, whatsapp")
     .order("created_at", { ascending: true })
     .limit(1);
 

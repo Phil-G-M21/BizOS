@@ -17,6 +17,7 @@ export function BusinessDetailsForm({
   initialRegion,
   initialCity,
   initialCategory,
+  initialWhatsapp,
 }: {
   businessId: string;
   ownerId: string;
@@ -24,6 +25,7 @@ export function BusinessDetailsForm({
   initialRegion: string;
   initialCity: string;
   initialCategory: string;
+  initialWhatsapp: string;
 }) {
   const supabase = createClient();
 
@@ -31,6 +33,7 @@ export function BusinessDetailsForm({
   const [region, setRegion] = useState(initialRegion || REGIONS[0]);
   const [city, setCity] = useState(initialCity);
   const [category, setCategory] = useState(initialCategory || CATEGORIES[0]);
+  const [whatsapp, setWhatsapp] = useState(initialWhatsapp);
   const [status, setStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -40,7 +43,7 @@ export function BusinessDetailsForm({
 
     const { error } = await supabase
       .from("businesses")
-      .update({ name, region, city, category })
+      .update({ name, region, city, category, whatsapp: whatsapp || null })
       .eq("id", businessId)
       .eq("owner_id", ownerId);
 
@@ -85,6 +88,21 @@ export function BusinessDetailsForm({
               <option key={c}>{c}</option>
             ))}
           </select>
+        </label>
+
+        <label className={label}>
+          WhatsApp number
+          <input
+            className={field}
+            type="tel"
+            placeholder="e.g. 233241234567"
+            value={whatsapp}
+            onChange={(e) => setWhatsapp(e.target.value)}
+          />
+          <span className="mt-1 block text-xs font-normal text-slate-400">
+            Used for the &quot;Order on WhatsApp&quot; button on your public catalog. Include the
+            country code, no spaces or plus sign.
+          </span>
         </label>
 
         {status && (

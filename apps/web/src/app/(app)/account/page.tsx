@@ -20,6 +20,7 @@ export default async function AccountPage() {
         initialRegion={business.region}
         initialCity={business.city}
         initialCategory={business.category}
+        initialWhatsapp={business.whatsapp ?? ""}
       />
 
       <ChangeEmailForm currentEmail={user.email ?? ""} />
