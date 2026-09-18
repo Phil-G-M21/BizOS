@@ -43,21 +43,6 @@ export function NavLink({
   );
 }
 
-export function DisabledNavItem({ label, icon }: { label: string; icon: ReactNode }) {
-  return (
-    <div
-      aria-disabled="true"
-      className="flex cursor-not-allowed items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-300"
-    >
-      {icon}
-      <span className="flex-1">{label}</span>
-      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-400">
-        Soon
-      </span>
-    </div>
-  );
-}
-
 // Shared nav sections rendered by both the desktop sidebar and the mobile drawer,
 // so the two never drift out of sync.
 export function NavContent() {
@@ -93,7 +78,7 @@ export function NavContent() {
           SYSTEM
         </div>
         <div className="space-y-1">
-          <DisabledNavItem label="Settings" icon={<Settings className="h-4 w-4" />} />
+          <NavLink href="/account" label="Settings" icon={<Settings className="h-4 w-4" />} />
         </div>
       </div>
     </>
