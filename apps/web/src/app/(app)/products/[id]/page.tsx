@@ -18,7 +18,9 @@ export default async function ProductDetailPage({
 
   const { data: product, error } = await supabase
     .from("products")
-    .select("id, name, selling_price, cost_price, stock_quantity, category, sku, low_stock_threshold")
+    .select(
+      "id, name, selling_price, cost_price, stock_quantity, category, sku, low_stock_threshold, image_url"
+    )
     .eq("id", id)
     .eq("business_id", business.id)
     .single();
@@ -41,8 +43,13 @@ export default async function ProductDetailPage({
       </Link>
 
       <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex h-64 items-center justify-center rounded-xl bg-[#f0eee8]">
-          <Package2 className="h-20 w-20 text-slate-400" />
+        <div className="flex h-64 items-center justify-center overflow-hidden rounded-xl bg-[#f0eee8]">
+          {product.image_url ? (
+            // eslint-disable-next-line @next/next/no-img-element -- external Supabase Storage URL
+            <img src={product.image_url} alt="" className="h-full w-full object-cover" />
+          ) : (
+            <Package2 className="h-20 w-20 text-slate-400" />
+          )}
         </div>
 
         <div className="mt-5 flex items-start justify-between gap-4">

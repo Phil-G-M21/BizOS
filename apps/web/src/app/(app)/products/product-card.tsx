@@ -27,8 +27,13 @@ export function ProductCard({ product, actions }: { product: Product; actions: R
       }}
       className="cursor-pointer rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md"
     >
-      <div className="flex h-32 items-center justify-center rounded-xl bg-[#f0eee8]">
-        <Package2 className="h-12 w-12 text-slate-400" />
+      <div className="flex h-32 items-center justify-center overflow-hidden rounded-xl bg-[#f0eee8]">
+        {product.image_url ? (
+          // eslint-disable-next-line @next/next/no-img-element -- external Supabase Storage URL
+          <img src={product.image_url} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <Package2 className="h-12 w-12 text-slate-400" />
+        )}
       </div>
 
       <div className="mt-4 flex items-start justify-between gap-4">

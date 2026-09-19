@@ -7,6 +7,7 @@ export type Product = {
   category: string | null;
   sku?: string | null;
   low_stock_threshold?: number | null;
+  image_url?: string | null;
 };
 
 export const DEFAULT_LOW_STOCK_THRESHOLD = 5;

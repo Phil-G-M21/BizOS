@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { ProductImageField } from "../product-image-field";
 
 const CATEGORIES = ["Fashion", "Beauty", "Electronics", "Food", "Shoes", "Cosmetics", "Home", "Other"];
 
@@ -10,6 +11,7 @@ export default function NewProductPage() {
   const router = useRouter();
   const supabase = createClient();
 
+  const [businessId, setBusinessId] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [selling, setSelling] = useState("");
   const [cost, setCost] = useState("");
@@ -17,32 +19,43 @@ export default function NewProductPage() {
   const [category, setCategory] = useState("Electronics");
   const [sku, setSku] = useState("");
   const [lowStockThreshold, setLowStockThreshold] = useState("5");
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    // The image field needs a business id to know where to upload before
+    // the product itself is ever saved, so this is fetched up front.
+    async function loadBusiness() {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        router.push("/login");
+        return;
+      }
+      const { data: businesses } = await supabase
+        .from("businesses")
+        .select("id")
+        .order("created_at", { ascending: true })
+        .limit(1);
+      const business = businesses?.[0];
+      if (!business) {
+        router.push("/onboarding");
+        return;
+      }
+      setBusinessId(business.id);
+    }
+    loadBusiness();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   async function save() {
+    if (!businessId) return;
+
     setLoading(true);
     setError(null);
 
-    const { data: userData } = await supabase.auth.getUser();
-    if (!userData.user) {
-      router.push("/login");
-      return;
-    }
-
-    const { data: businesses } = await supabase
-      .from("businesses")
-      .select("id")
-      .order("created_at", { ascending: true })
-      .limit(1);
-    const business = businesses?.[0];
-    if (!business) {
-      router.push("/onboarding");
-      return;
-    }
-
     const { error } = await supabase.from("products").insert({
-      business_id: business.id,
+      business_id: businessId,
       name,
       selling_price: Number(selling) || 0,
       cost_price: Number(cost) || 0,
@@ -50,6 +63,7 @@ export default function NewProductPage() {
       category,
       sku: sku.trim() || null,
       low_stock_threshold: Number(lowStockThreshold) || 5,
+      image_url: imageUrl,
     });
 
     setLoading(false);
@@ -75,6 +89,8 @@ export default function NewProductPage() {
 
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="space-y-4">
+          <ProductImageField businessId={businessId} imageUrl={imageUrl} onChange={setImageUrl} />
+
           <label className={label}>
             Product name
             <input
@@ -163,7 +179,7 @@ export default function NewProductPage() {
           </button>
           <button
             onClick={save}
-            disabled={loading || !name}
+            disabled={loading || !name || !businessId}
             className="rounded-lg bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-800 disabled:opacity-50"
           >
             {loading ? "Saving..." : "Save product"}

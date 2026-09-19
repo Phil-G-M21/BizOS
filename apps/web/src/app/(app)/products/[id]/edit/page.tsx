@@ -3,6 +3,7 @@
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { ProductImageField } from "../../product-image-field";
 
 const CATEGORIES = ["Fashion", "Beauty", "Electronics", "Food", "Shoes", "Cosmetics", "Home", "Other"];
 
@@ -16,6 +17,7 @@ export default function EditProductPage({
   const supabase = createClient();
 
   const [loading, setLoading] = useState(true);
+  const [businessId, setBusinessId] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [selling, setSelling] = useState("");
   const [cost, setCost] = useState("");
@@ -23,6 +25,7 @@ export default function EditProductPage({
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [sku, setSku] = useState("");
   const [lowStockThreshold, setLowStockThreshold] = useState("5");
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -44,10 +47,13 @@ export default function EditProductPage({
         router.push("/onboarding");
         return;
       }
+      setBusinessId(business.id);
 
       const { data: product, error: fetchError } = await supabase
         .from("products")
-        .select("id, name, selling_price, cost_price, stock_quantity, category, sku, low_stock_threshold")
+        .select(
+          "id, name, selling_price, cost_price, stock_quantity, category, sku, low_stock_threshold, image_url"
+        )
         .eq("id", id)
         .eq("business_id", business.id)
         .single();
@@ -64,6 +70,7 @@ export default function EditProductPage({
       setCategory(product.category ?? CATEGORIES[0]);
       setSku(product.sku ?? "");
       setLowStockThreshold(String(product.low_stock_threshold ?? 5));
+      setImageUrl(product.image_url ?? null);
       setLoading(false);
     }
     load();
@@ -83,6 +90,7 @@ export default function EditProductPage({
         category,
         sku: sku.trim() || null,
         low_stock_threshold: Number(lowStockThreshold) || 5,
+        image_url: imageUrl,
       })
       .eq("id", id);
 
@@ -113,6 +121,8 @@ export default function EditProductPage({
 
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="space-y-4">
+          <ProductImageField businessId={businessId} imageUrl={imageUrl} onChange={setImageUrl} />
+
           <label className={label}>
             Product name
             <input

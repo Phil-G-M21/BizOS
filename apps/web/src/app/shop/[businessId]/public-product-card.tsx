@@ -7,6 +7,7 @@ export type PublicProduct = {
   selling_price: number;
   category: string | null;
   in_stock: boolean;
+  image_url: string | null;
 };
 
 // Read-only storefront card for anonymous visitors: no click-through, no
@@ -14,8 +15,13 @@ export type PublicProduct = {
 export function PublicProductCard({ product }: { product: PublicProduct }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="flex h-32 items-center justify-center rounded-xl bg-[#f0eee8]">
-        <Package2 className="h-12 w-12 text-slate-400" />
+      <div className="flex h-32 items-center justify-center overflow-hidden rounded-xl bg-[#f0eee8]">
+        {product.image_url ? (
+          // eslint-disable-next-line @next/next/no-img-element -- external Supabase Storage URL
+          <img src={product.image_url} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <Package2 className="h-12 w-12 text-slate-400" />
+        )}
       </div>
 
       <div className="mt-4 flex items-start justify-between gap-4">
