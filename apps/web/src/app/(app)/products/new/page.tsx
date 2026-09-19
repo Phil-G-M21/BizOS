@@ -15,6 +15,8 @@ export default function NewProductPage() {
   const [cost, setCost] = useState("");
   const [stock, setStock] = useState("");
   const [category, setCategory] = useState("Electronics");
+  const [sku, setSku] = useState("");
+  const [lowStockThreshold, setLowStockThreshold] = useState("5");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -46,6 +48,8 @@ export default function NewProductPage() {
       cost_price: Number(cost) || 0,
       stock_quantity: Number(stock) || 0,
       category,
+      sku: sku.trim() || null,
+      low_stock_threshold: Number(lowStockThreshold) || 5,
     });
 
     setLoading(false);
@@ -122,6 +126,28 @@ export default function NewProductPage() {
                   <option key={c}>{c}</option>
                 ))}
               </select>
+            </label>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <label className={label}>
+              SKU <span className="font-normal text-slate-400">(optional)</span>
+              <input
+                className={field}
+                placeholder="e.g. BD-001"
+                value={sku}
+                onChange={(e) => setSku(e.target.value)}
+              />
+            </label>
+            <label className={label}>
+              Low stock threshold
+              <input
+                className={field}
+                placeholder="5"
+                inputMode="numeric"
+                value={lowStockThreshold}
+                onChange={(e) => setLowStockThreshold(e.target.value)}
+              />
             </label>
           </div>
 

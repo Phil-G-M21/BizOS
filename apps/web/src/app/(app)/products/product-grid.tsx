@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Search, X } from "lucide-react";
 import { DeleteButton } from "./delete-button";
 import { ProductCard } from "./product-card";
-import { LOW_STOCK_THRESHOLD, type Product } from "./product-shared";
+import { isLowStock, type Product } from "./product-shared";
 
 type StockFilter = "All" | "In Stock" | "Low Stock" | "Out of Stock";
 
@@ -20,10 +20,8 @@ export function ProductGrid({ products }: { products: Product[] }) {
         .includes(search.toLowerCase());
       const matchesFilter =
         stockFilter === "All" ||
-        (stockFilter === "In Stock" && product.stock_quantity > LOW_STOCK_THRESHOLD) ||
-        (stockFilter === "Low Stock" &&
-          product.stock_quantity > 0 &&
-          product.stock_quantity <= LOW_STOCK_THRESHOLD) ||
+        (stockFilter === "In Stock" && !isLowStock(product)) ||
+        (stockFilter === "Low Stock" && product.stock_quantity > 0 && isLowStock(product)) ||
         (stockFilter === "Out of Stock" && product.stock_quantity === 0);
       return matchesSearch && matchesFilter;
     });

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireBusiness } from "@/lib/business";
 
-const LOW_STOCK_THRESHOLD = 5;
+const DEFAULT_LOW_STOCK_THRESHOLD = 5;
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GH", {
@@ -32,7 +32,7 @@ export default async function InventoryPage() {
   const [{ data: products }, { data: transactions }] = await Promise.all([
     supabase
       .from("products")
-      .select("id, name, stock_quantity")
+      .select("id, name, stock_quantity, low_stock_threshold")
       .eq("business_id", business.id)
       .order("name", { ascending: true }),
     supabase
@@ -80,7 +80,8 @@ export default async function InventoryPage() {
                 </thead>
                 <tbody className="divide-y divide-slate-200">
                   {rows.map((product) => {
-                    const lowStock = product.stock_quantity <= LOW_STOCK_THRESHOLD;
+                    const lowStock =
+                      product.stock_quantity <= (product.low_stock_threshold ?? DEFAULT_LOW_STOCK_THRESHOLD);
                     return (
                       <tr key={product.id}>
                         <td className="px-4 py-3 font-medium text-slate-900">{product.name}</td>
@@ -109,7 +110,8 @@ export default async function InventoryPage() {
 
           <div className="space-y-3 md:hidden">
             {rows.map((product) => {
-              const lowStock = product.stock_quantity <= LOW_STOCK_THRESHOLD;
+              const lowStock =
+                product.stock_quantity <= (product.low_stock_threshold ?? DEFAULT_LOW_STOCK_THRESHOLD);
               return (
                 <div
                   key={product.id}

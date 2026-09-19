@@ -1,8 +1,8 @@
 import { requireBusiness } from "@/lib/business";
 import {
-  LOW_STOCK_THRESHOLD,
   estimateGrossProfit,
   getDailySales,
+  isLowStock,
   splitOrders,
   summarizeExpenses,
   topProductsByQuantity,
@@ -40,7 +40,7 @@ export default async function AnalyticsPage() {
 
   const { data: products } = await supabase
     .from("products")
-    .select("id, cost_price, stock_quantity")
+    .select("id, cost_price, stock_quantity, low_stock_threshold")
     .eq("business_id", business.id);
   const productRows = products ?? [];
 
@@ -70,9 +70,7 @@ export default async function AnalyticsPage() {
   const netProfit = grossProfit - totalExpenses;
 
   const topProducts = topProductsByQuantity(items);
-  const lowStockCount = productRows.filter(
-    (p) => p.stock_quantity <= LOW_STOCK_THRESHOLD
-  ).length;
+  const lowStockCount = productRows.filter((p) => isLowStock(p)).length;
   const dailySales = getDailySales(orderRows, 7);
   const maxTopQuantity = Math.max(...topProducts.map((p) => p.quantity), 0);
 

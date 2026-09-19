@@ -1,8 +1,8 @@
 import { requireBusiness } from "@/lib/business";
 import {
-  LOW_STOCK_THRESHOLD,
   estimateGrossProfit,
   getDailySales,
+  isLowStock,
   pendingPaymentsTotal,
   splitOrders,
   summarizeExpenses,
@@ -36,7 +36,7 @@ export default async function DashboardPage() {
 
   const { data: products } = await supabase
     .from("products")
-    .select("id, name, selling_price, cost_price, stock_quantity")
+    .select("id, name, selling_price, cost_price, stock_quantity, low_stock_threshold")
     .eq("business_id", business.id);
   const productRows = products ?? [];
 
@@ -55,7 +55,7 @@ export default async function DashboardPage() {
     (s, p) => s + Number(p.selling_price) * Number(p.stock_quantity),
     0
   );
-  const lowStockItems = productRows.filter((p) => p.stock_quantity <= LOW_STOCK_THRESHOLD);
+  const lowStockItems = productRows.filter((p) => isLowStock(p));
 
   const { fulfilled, totalRevenue, paidCount, unpaidCount, totalOrders } =
     splitOrders(orderRows);
@@ -146,7 +146,7 @@ export default async function DashboardPage() {
 
           {lowStockItems.length === 0 ? (
             <p className="mt-4 text-sm text-slate-500">
-              All products are above the low-stock threshold ({LOW_STOCK_THRESHOLD} units).
+              All products are above their low-stock threshold.
             </p>
           ) : (
             <div className="mt-4 space-y-3">

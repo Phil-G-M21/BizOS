@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { Package2 } from "lucide-react";
-import { cedis, LOW_STOCK_THRESHOLD, type Product } from "./product-shared";
+import { cedis, isLowStock, type Product } from "./product-shared";
 
 export type { Product };
 
@@ -12,7 +12,7 @@ export type { Product };
 // stopPropagation so nested buttons/links don't trigger the card navigation.
 export function ProductCard({ product, actions }: { product: Product; actions: ReactNode }) {
   const router = useRouter();
-  const lowStock = product.stock_quantity <= LOW_STOCK_THRESHOLD;
+  const lowStock = isLowStock(product);
 
   return (
     <div

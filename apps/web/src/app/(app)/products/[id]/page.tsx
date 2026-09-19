@@ -3,8 +3,8 @@ import { redirect } from "next/navigation";
 import { Package2 } from "lucide-react";
 import { requireBusiness } from "@/lib/business";
 import { DeleteButton } from "../delete-button";
-
-const LOW_STOCK_THRESHOLD = 5;
+import { DuplicateButton } from "../duplicate-button";
+import { isLowStock } from "../product-shared";
 
 const cedis = (n: number) => "GH₵" + Number(n).toLocaleString();
 
@@ -18,7 +18,7 @@ export default async function ProductDetailPage({
 
   const { data: product, error } = await supabase
     .from("products")
-    .select("id, name, selling_price, cost_price, stock_quantity, category")
+    .select("id, name, selling_price, cost_price, stock_quantity, category, sku, low_stock_threshold")
     .eq("id", id)
     .eq("business_id", business.id)
     .single();
@@ -27,7 +27,7 @@ export default async function ProductDetailPage({
     redirect("/products");
   }
 
-  const lowStock = product.stock_quantity <= LOW_STOCK_THRESHOLD;
+  const lowStock = isLowStock(product);
   const stockLabel =
     product.stock_quantity === 0 ? "OUT OF STOCK" : lowStock ? "LOW STOCK" : "IN STOCK";
 
@@ -49,6 +49,9 @@ export default async function ProductDetailPage({
           <div>
             <h1 className="text-3xl font-bold text-slate-900">{product.name}</h1>
             <div className="mt-1 text-sm text-slate-500">{product.category}</div>
+            {product.sku && (
+              <div className="mt-1 text-xs text-slate-400">SKU: {product.sku}</div>
+            )}
           </div>
           <div
             className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${
@@ -80,6 +83,16 @@ export default async function ProductDetailPage({
         </div>
 
         <div className="mt-6 flex justify-end gap-3">
+          <DuplicateButton
+            product={{
+              name: product.name,
+              selling_price: product.selling_price,
+              cost_price: product.cost_price,
+              category: product.category,
+              sku: product.sku,
+              low_stock_threshold: product.low_stock_threshold,
+            }}
+          />
           <Link
             href={`/products/${product.id}/edit`}
             className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"

@@ -2,11 +2,18 @@
 // data. No new tables — everything here is a pure function over rows the caller fetched.
 
 export const REVENUE_STATUSES = ["paid", "processing", "completed"] as const;
-export const LOW_STOCK_THRESHOLD = 5;
+export const DEFAULT_LOW_STOCK_THRESHOLD = 5;
 
 type OrderLike = { id: string; status: string; total: number; created_at: string };
 type ItemLike = { product_id: string | null; name: string; unit_price: number; quantity: number };
 type ProductCost = { id: string; cost_price: number };
+
+export function isLowStock(product: {
+  stock_quantity: number;
+  low_stock_threshold?: number | null;
+}) {
+  return product.stock_quantity <= (product.low_stock_threshold ?? DEFAULT_LOW_STOCK_THRESHOLD);
+}
 
 function isRevenueStatus(status: string): boolean {
   return (REVENUE_STATUSES as readonly string[]).includes(status);

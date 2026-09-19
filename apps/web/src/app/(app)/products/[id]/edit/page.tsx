@@ -21,6 +21,8 @@ export default function EditProductPage({
   const [cost, setCost] = useState("");
   const [stockQuantity, setStockQuantity] = useState(0);
   const [category, setCategory] = useState(CATEGORIES[0]);
+  const [sku, setSku] = useState("");
+  const [lowStockThreshold, setLowStockThreshold] = useState("5");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -45,7 +47,7 @@ export default function EditProductPage({
 
       const { data: product, error: fetchError } = await supabase
         .from("products")
-        .select("id, name, selling_price, cost_price, stock_quantity, category")
+        .select("id, name, selling_price, cost_price, stock_quantity, category, sku, low_stock_threshold")
         .eq("id", id)
         .eq("business_id", business.id)
         .single();
@@ -60,6 +62,8 @@ export default function EditProductPage({
       setCost(String(product.cost_price));
       setStockQuantity(product.stock_quantity);
       setCategory(product.category ?? CATEGORIES[0]);
+      setSku(product.sku ?? "");
+      setLowStockThreshold(String(product.low_stock_threshold ?? 5));
       setLoading(false);
     }
     load();
@@ -77,6 +81,8 @@ export default function EditProductPage({
         selling_price: Number(selling) || 0,
         cost_price: Number(cost) || 0,
         category,
+        sku: sku.trim() || null,
+        low_stock_threshold: Number(lowStockThreshold) || 5,
       })
       .eq("id", id);
 
@@ -155,6 +161,28 @@ export default function EditProductPage({
                   <option key={c}>{c}</option>
                 ))}
               </select>
+            </label>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <label className={label}>
+              SKU <span className="font-normal text-slate-400">(optional)</span>
+              <input
+                className={field}
+                placeholder="e.g. BD-001"
+                value={sku}
+                onChange={(e) => setSku(e.target.value)}
+              />
+            </label>
+            <label className={label}>
+              Low stock threshold
+              <input
+                className={field}
+                placeholder="5"
+                inputMode="numeric"
+                value={lowStockThreshold}
+                onChange={(e) => setLowStockThreshold(e.target.value)}
+              />
             </label>
           </div>
 
