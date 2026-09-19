@@ -30,24 +30,54 @@ function newLine(): Line {
   return { key: `line-${lineKeySeq}`, productId: "", name: "", unitPrice: 0, quantity: 1 };
 }
 
+function lineFromInitial(initial: {
+  productId: string;
+  name: string;
+  unitPrice: number;
+  quantity: number;
+}): Line {
+  lineKeySeq += 1;
+  return { key: `line-${lineKeySeq}`, ...initial };
+}
+
+export type InitialOrderLine = {
+  productId: string;
+  name: string;
+  unitPrice: number;
+  quantity: number;
+};
+
 export function OrderForm({
+  orderId,
+  initialCustomerId,
+  initialDeliveryFee,
+  initialLines,
   onCancel,
   onSaved,
 }: {
+  orderId?: string;
+  initialCustomerId?: string | null;
+  initialDeliveryFee?: number;
+  initialLines?: InitialOrderLine[];
   onCancel: () => void;
   onSaved: () => void;
 }) {
   const router = useRouter();
   const supabase = createClient();
+  const isEditing = Boolean(orderId);
 
   const [loading, setLoading] = useState(true);
   const [businessId, setBusinessId] = useState<string | null>(null);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
 
-  const [customerId, setCustomerId] = useState("");
-  const [deliveryFee, setDeliveryFee] = useState("");
-  const [lines, setLines] = useState<Line[]>([newLine()]);
+  const [customerId, setCustomerId] = useState(initialCustomerId ?? "");
+  const [deliveryFee, setDeliveryFee] = useState(
+    initialDeliveryFee !== undefined ? String(initialDeliveryFee) : ""
+  );
+  const [lines, setLines] = useState<Line[]>(() =>
+    initialLines && initialLines.length > 0 ? initialLines.map(lineFromInitial) : [newLine()]
+  );
 
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -140,6 +170,57 @@ export function OrderForm({
 
     setSaving(true);
     setError(null);
+
+    if (isEditing && orderId) {
+      // Scoping by status here too (not just the page-level redirect) means a
+      // stale tab can't push edits through after the order's stock/payment
+      // triggers have already fired for it elsewhere.
+      const { data: updated, error: updateError } = await supabase
+        .from("orders")
+        .update({
+          customer_id: customerId || null,
+          delivery_fee: deliveryFeeNumber,
+          total: orderTotal,
+        })
+        .eq("id", orderId)
+        .in("status", ["draft", "pending_payment"])
+        .select("id");
+
+      if (updateError || !updated || updated.length === 0) {
+        setSaving(false);
+        setError(updateError?.message ?? "This order can no longer be edited.");
+        return;
+      }
+
+      const { error: deleteError } = await supabase
+        .from("order_items")
+        .delete()
+        .eq("order_id", orderId);
+      if (deleteError) {
+        setSaving(false);
+        setError(deleteError.message);
+        return;
+      }
+
+      const { error: itemsError } = await supabase.from("order_items").insert(
+        validLines.map((l) => ({
+          order_id: orderId,
+          product_id: l.productId,
+          name: l.name,
+          unit_price: l.unitPrice,
+          quantity: l.quantity,
+        }))
+      );
+
+      setSaving(false);
+      if (itemsError) {
+        setError(`Order updated, but its items failed to save (${itemsError.message}).`);
+        return;
+      }
+
+      onSaved();
+      return;
+    }
 
     const { data: order, error: orderError } = await supabase
       .from("orders")
@@ -294,7 +375,7 @@ export function OrderForm({
           disabled={saving}
           className="rounded-lg bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-800 disabled:opacity-50"
         >
-          {saving ? "Saving..." : "Save order"}
+          {saving ? "Saving..." : isEditing ? "Save changes" : "Save order"}
         </button>
       </div>
     </div>

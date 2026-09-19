@@ -13,6 +13,8 @@ const formatDate = (iso: string) =>
     timeZone: "UTC",
   });
 
+const EDITABLE_STATUSES = ["draft", "pending_payment"];
+
 const STATUS_STYLES: Record<string, string> = {
   draft: "bg-slate-100 text-slate-700",
   pending_payment: "bg-amber-100 text-amber-700",
@@ -58,6 +60,7 @@ export default async function OrderDetailPage({
 
   const customer = customerInfo(order.customers);
   const orderRef = order.id.slice(0, 8).toUpperCase();
+  const isEditable = EDITABLE_STATUSES.includes(order.status);
   const subtotal = itemRows.reduce(
     (sum, item) => sum + Number(item.unit_price) * Number(item.quantity),
     0
@@ -82,6 +85,21 @@ export default async function OrderDetailPage({
           >
             {order.status.replace("_", " ")}
           </span>
+        </div>
+
+        <div className="mt-4 flex justify-end">
+          {isEditable ? (
+            <Link
+              href={`/orders/${order.id}/edit`}
+              className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              Edit
+            </Link>
+          ) : (
+            <span className="text-xs text-slate-400">
+              Paid orders can&apos;t be edited — cancel or refund instead.
+            </span>
+          )}
         </div>
 
         <div className="mt-4 border-t border-slate-100 pt-4 text-sm text-slate-600">
