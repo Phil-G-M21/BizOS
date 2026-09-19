@@ -46,6 +46,22 @@ export function estimateGrossProfit(items: ItemLike[], products: ProductCost[]) 
   return { profit, skipped };
 }
 
+export type ExpenseLike = { category: string; amount: number };
+
+export function summarizeExpenses(expenses: ExpenseLike[]) {
+  const total = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+  const byCategory = new Map<string, number>();
+  for (const e of expenses) {
+    byCategory.set(e.category, (byCategory.get(e.category) ?? 0) + Number(e.amount));
+  }
+  return {
+    total,
+    byCategory: [...byCategory.entries()]
+      .map(([category, total]) => ({ category, total }))
+      .sort((a, b) => b.total - a.total),
+  };
+}
+
 export function topProductsByQuantity(items: ItemLike[], limit = 5) {
   const byName = new Map<string, number>();
   for (const item of items) {

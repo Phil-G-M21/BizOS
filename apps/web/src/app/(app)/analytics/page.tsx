@@ -4,6 +4,7 @@ import {
   estimateGrossProfit,
   getDailySales,
   splitOrders,
+  summarizeExpenses,
   topProductsByQuantity,
 } from "@/lib/analytics";
 import { DailySalesBars } from "../daily-sales-bars";
@@ -57,7 +58,17 @@ export default async function AnalyticsPage() {
     items = itemRows ?? [];
   }
 
-  const { profit, skipped } = estimateGrossProfit(items, productRows);
+  const { profit: grossProfit, skipped } = estimateGrossProfit(items, productRows);
+
+  const { data: expenses } = await supabase
+    .from("expenses")
+    .select("category, amount")
+    .eq("business_id", business.id);
+  const { total: totalExpenses, byCategory: expensesByCategory } = summarizeExpenses(
+    expenses ?? []
+  );
+  const netProfit = grossProfit - totalExpenses;
+
   const topProducts = topProductsByQuantity(items);
   const lowStockCount = productRows.filter(
     (p) => p.stock_quantity <= LOW_STOCK_THRESHOLD
@@ -87,19 +98,60 @@ export default async function AnalyticsPage() {
         <h1 className="text-3xl font-bold text-slate-900">Business performance</h1>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <Stat label="Total Revenue" value={cedis(totalRevenue)} />
         <Stat
           label="Orders"
           value={String(totalOrders)}
           hint={`${paidCount} paid · ${unpaidCount} unpaid`}
         />
-        <Stat
-          label="Estimated Profit"
-          value={cedis(profit)}
-          hint={skipped > 0 ? `Approximate — ${skipped} item(s) from deleted products excluded` : undefined}
-        />
         <Stat label="Low Stock Items" value={String(lowStockCount)} />
+        <Stat
+          label="Gross profit"
+          value={cedis(grossProfit)}
+          hint={
+            skipped > 0
+              ? `Revenue − COGS, approximate — ${skipped} item(s) from deleted products excluded`
+              : "Revenue − cost of goods sold"
+          }
+        />
+        <Stat
+          label="Net profit"
+          value={cedis(netProfit)}
+          hint={`After ${cedis(totalExpenses)} in expenses`}
+        />
+      </div>
+
+      <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="mb-4 text-xl font-bold text-slate-900">Expense summary</div>
+        <div className="mb-4">
+          <div className="text-sm text-slate-500">Total expenses</div>
+          <div className="mt-1 text-2xl font-bold text-slate-900">{cedis(totalExpenses)}</div>
+        </div>
+        {expensesByCategory.length === 0 ? (
+          <p className="text-sm text-slate-500">No expenses recorded yet.</p>
+        ) : (
+          <div className="space-y-3">
+            {expensesByCategory.map((entry) => (
+              <div key={entry.category} className="flex items-center gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2 text-sm">
+                    <span className="truncate font-medium text-slate-900">{entry.category}</span>
+                    <span className="shrink-0 text-slate-500">{cedis(entry.total)}</span>
+                  </div>
+                  <div className="mt-1 h-2 overflow-hidden rounded-full bg-slate-100">
+                    <div
+                      className="h-full rounded-full bg-amber-500"
+                      style={{
+                        width: `${totalExpenses ? (entry.total / totalExpenses) * 100 : 0}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">

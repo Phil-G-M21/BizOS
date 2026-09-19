@@ -5,6 +5,7 @@ import {
   getDailySales,
   pendingPaymentsTotal,
   splitOrders,
+  summarizeExpenses,
 } from "@/lib/analytics";
 import { DailySalesBars } from "../daily-sales-bars";
 import { CurrentDateTime } from "./current-datetime";
@@ -70,10 +71,17 @@ export default async function DashboardPage() {
       .in("order_id", fulfilledIds);
     items = itemRows ?? [];
   }
-  const { profit } = estimateGrossProfit(
+  const { profit: grossProfit } = estimateGrossProfit(
     items,
     productRows.map((p) => ({ id: p.id, cost_price: p.cost_price }))
   );
+
+  const { data: expenses } = await supabase
+    .from("expenses")
+    .select("category, amount")
+    .eq("business_id", business.id);
+  const { total: totalExpenses } = summarizeExpenses(expenses ?? []);
+  const netProfit = grossProfit - totalExpenses;
 
   const dailySales = getDailySales(orderRows, 7);
 
@@ -92,7 +100,7 @@ export default async function DashboardPage() {
 
       <div>
         <div className="mb-3 text-sm font-semibold text-slate-500">Sales</div>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           <Stat label="Total Revenue" value={cedis(totalRevenue)} />
           <Stat
             label="Orders"
@@ -100,7 +108,12 @@ export default async function DashboardPage() {
             hint={`${paidCount} paid · ${unpaidCount} unpaid`}
           />
           <Stat label="Pending Payments" value={cedis(pendingPayments)} />
-          <Stat label="Estimated Profit" value={cedis(profit)} />
+          <Stat label="Gross profit" value={cedis(grossProfit)} hint="Revenue − cost of goods sold" />
+          <Stat
+            label="Net profit"
+            value={cedis(netProfit)}
+            hint={`After ${cedis(totalExpenses)} in expenses`}
+          />
         </div>
       </div>
 
