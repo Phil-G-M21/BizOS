@@ -26,6 +26,12 @@ export default async function ProductsPage() {
         <div className="flex w-fit flex-wrap gap-3">
           <ShareCatalogButton businessId={business.id} />
           <Link
+            href="/products/import"
+            className="inline-flex w-fit items-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+          >
+            Import
+          </Link>
+          <Link
             href="/products/new"
             className="inline-flex w-fit items-center rounded-lg bg-teal-700 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-teal-800"
           >
