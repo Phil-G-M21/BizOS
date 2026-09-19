@@ -56,29 +56,31 @@ export function CustomerGrid({ customers }: { customers: Customer[] }) {
               key={customer.id}
               className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
             >
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#d97757] text-lg font-bold text-white">
-                  {customer.name.slice(0, 1).toUpperCase()}
-                </div>
-                <div className="min-w-0">
-                  <div className="truncate text-lg font-semibold text-slate-900">
-                    {customer.name}
+              <Link href={`/customers/${customer.id}`} className="block">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#d97757] text-lg font-bold text-white">
+                    {customer.name.slice(0, 1).toUpperCase()}
                   </div>
-                  <div className="truncate text-sm text-slate-500">
-                    {customer.phone || "No phone number"}
+                  <div className="min-w-0">
+                    <div className="truncate text-lg font-semibold text-slate-900 hover:text-teal-700">
+                      {customer.name}
+                    </div>
+                    <div className="truncate text-sm text-slate-500">
+                      {customer.phone || "No phone number"}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {(customer.email || customer.address || customer.notes) && (
-                <div className="mt-5 space-y-1.5 text-sm text-slate-600">
-                  {customer.email && <div className="truncate">{customer.email}</div>}
-                  {customer.address && <div className="truncate">{customer.address}</div>}
-                  {customer.notes && (
-                    <div className="line-clamp-2 text-slate-500">{customer.notes}</div>
-                  )}
-                </div>
-              )}
+                {(customer.email || customer.address || customer.notes) && (
+                  <div className="mt-5 space-y-1.5 text-sm text-slate-600">
+                    {customer.email && <div className="truncate">{customer.email}</div>}
+                    {customer.address && <div className="truncate">{customer.address}</div>}
+                    {customer.notes && (
+                      <div className="line-clamp-2 text-slate-500">{customer.notes}</div>
+                    )}
+                  </div>
+                )}
+              </Link>
 
               <div className="mt-5 flex items-center justify-end gap-2 border-t border-slate-100 pt-4">
                 <Link
