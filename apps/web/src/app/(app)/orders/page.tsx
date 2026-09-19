@@ -70,7 +70,9 @@ export default async function OrdersPage() {
                   {rows.map((order) => (
                     <tr key={order.id}>
                       <td className="px-4 py-3 font-medium text-slate-900">
-                        #{order.id.slice(0, 8).toUpperCase()}
+                        <Link href={`/orders/${order.id}`} className="hover:text-teal-700 hover:underline">
+                          #{order.id.slice(0, 8).toUpperCase()}
+                        </Link>
                       </td>
                       <td className="px-4 py-3 text-slate-600">{customerName(order.customers)}</td>
                       <td className="px-4 py-3 text-slate-900">{cedis(order.total)}</td>
@@ -96,9 +98,12 @@ export default async function OrdersPage() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                    <Link
+                      href={`/orders/${order.id}`}
+                      className="text-xs font-semibold uppercase tracking-wide text-slate-400 hover:text-teal-700"
+                    >
                       #{order.id.slice(0, 8).toUpperCase()}
-                    </div>
+                    </Link>
                     <div className="mt-1 truncate font-medium text-slate-900">
                       {customerName(order.customers)}
                     </div>

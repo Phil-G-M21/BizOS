@@ -145,9 +145,10 @@ export default async function CustomerDetailPage({
         ) : (
           <div className="space-y-3">
             {orderRows.map((order) => (
-              <div
+              <Link
                 key={order.id}
-                className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 px-4 py-3"
+                href={`/orders/${order.id}`}
+                className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 px-4 py-3 hover:bg-slate-100"
               >
                 <div className="min-w-0">
                   <div className="text-sm font-medium text-slate-900">
@@ -161,7 +162,7 @@ export default async function CustomerDetailPage({
                   </span>
                   <StatusBadge status={order.status} />
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
